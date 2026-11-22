@@ -1,3 +1,38 @@
+<div align="center">
+
+# 🛡️ Intune & Entra ID Admin Toolkit
+
+**Day-to-day operations for Microsoft Intune and Entra ID**
+
+PowerShell scripts for reporting, bulk actions, policy assignment, and troubleshooting across Intune and Entra ID tenants.
+
+[![Mode](https://img.shields.io/badge/Mode-CLI-334155?style=for-the-badge)](#-usage)
+[![PowerShell](https://img.shields.io/badge/PowerShell-5.1%2B-5391FE?style=for-the-badge&logo=powershell&logoColor=white)](https://learn.microsoft.com/en-us/powershell/)
+[![Platform](https://img.shields.io/badge/Platform-Windows%2010%2F11-0F172A?style=for-the-badge)](#-prerequisites)
+[![Intune](https://img.shields.io/badge/Intune-Graph%20API-0078D4?style=for-the-badge)](#-overview)
+[![License](https://img.shields.io/badge/License-MIT-F59E0B?style=for-the-badge)](#-license)
+[![Version](https://img.shields.io/badge/Version-1.0.0-334155?style=for-the-badge)](#-overview)
+
+[Overview](#overview) • [Prerequisites](#-prerequisites) • [Scripts](#-scripts) • [Permissions](#-graph-permissions) • [License](#-license)
+
+</div>
+
+---
+
+# 📖 Overview
+
+**IntuneToolKit** is a folder of standalone PowerShell scripts for day-to-day Microsoft Intune and Entra ID operations: inventory, compliance, policy conflicts, app status, identity audits, and bulk actions.
+
+---
+
+# ✨ Core Features
+
+* Per-task scripts with parameter-driven filters (`-OSFilter`, `-GroupName`, `-ThrottleMs`).
+* Automatic CSV export with timestamped filenames, or a custom `-ExportPath`.
+* Shared Graph session reuse when the launcher is used first; built-in pagination and throttling handling.
+
+---
+
 # Intune & Entra ID Admin Toolkit
 
 Day-to-day operations, troubleshooting, and reporting for Microsoft Intune and Entra ID environments.
@@ -16,7 +51,7 @@ Day-to-day operations, troubleshooting, and reporting for Microsoft Intune and E
 
 ---
 
-## Folder Structure
+# 📂 Project Structure
 
 Place all scripts in the same directory:
 
@@ -52,7 +87,7 @@ This authenticates once with all required Graph scopes, then presents an interac
 
 ### Option 2: Run Scripts Directly
 
-Each script is fully standalone. Run any script individually — it will handle Graph authentication on its own if no session exists.
+Each script is fully standalone. Run any script individually; it handles Graph authentication on its own if no session exists.
 
 ---
 
@@ -62,9 +97,9 @@ Each script is fully standalone. Run any script individually — it will handle 
 
 ### 1. Get-IntuneDevicePolicies.ps1
 
-**What it does:** Reports every Intune policy, app, and script assigned to a specific device via its group memberships, "All Devices", and "All Users" targets.
+What it does: Reports every Intune policy, app, and script assigned to a specific device via its group memberships, "All Devices", and "All Users" targets.
 
-**When to use:** A device is misbehaving and you need to see everything targeting it.
+When to use: A device is misbehaving and you need to see everything targeting it.
 
 ```powershell
 # Look up by device name
@@ -77,15 +112,15 @@ Each script is fully standalone. Run any script individually — it will handle 
 .\Get-IntuneDevicePolicies.ps1 -DeviceName "L-PF4Z0HM0" -ExportPath "C:\temp\device_policies.csv"
 ```
 
-**Output includes:** Policy type, policy name, platform, which group triggered the assignment, and policy ID. Auto-exports a CSV to the temp folder.
+Output includes: Policy type, policy name, platform, which group triggered the assignment, and policy ID. Auto-exports a CSV to the temp folder.
 
 ---
 
 ### 2. Get-IntuneGroupPolicies.ps1
 
-**What it does:** Reports every Intune policy and app assigned to a specific Entra ID group — both Include and Exclude assignments.
+What it does: Reports every Intune policy and app assigned to a specific Entra ID group, including both Include and Exclude assignments.
 
-**When to use:** You want to know what happens when a device or user is added to a group, or you need to audit a group's policy footprint.
+When to use: You want to know what happens when a device or user is added to a group, or you need to audit a group's policy footprint.
 
 ```powershell
 # Look up by group name
@@ -101,15 +136,15 @@ Each script is fully standalone. Run any script individually — it will handle 
 .\Get-IntuneGroupPolicies.ps1 -GroupName "SG-Intune-Windows-Devices" -ExportPath "C:\temp\group_policies.csv"
 ```
 
-**Output includes:** Policy type, policy name, platform, Include/Exclude assignment type, and policy ID. Shows group metadata (type, member count, dynamic rule, parent groups).
+Output includes: Policy type, policy name, platform, Include/Exclude assignment type, and policy ID. Shows group metadata (type, member count, dynamic rule, parent groups).
 
 ---
 
 ### 3. Get-IntuneUserPolicies.ps1
 
-**What it does:** Reports every Intune policy and app assigned to a user through their transitive group memberships, "All Users", and "All Licensed Users" targets.
+What it does: Reports every Intune policy and app assigned to a user through their transitive group memberships, "All Users", and "All Licensed Users" targets.
 
-**When to use:** A user reports an issue and you need to see their full policy footprint, or you're onboarding someone and want to verify what they'll receive.
+When to use: A user reports an issue and you need to see their full policy footprint, or you're onboarding someone and want to verify what they'll receive.
 
 ```powershell
 # Look up by UPN
@@ -122,15 +157,15 @@ Each script is fully standalone. Run any script individually — it will handle 
 .\Get-IntuneUserPolicies.ps1 -UserPrincipalName "jsmith@contoso.com" -ExportPath "C:\temp\user_policies.csv"
 ```
 
-**Output includes:** User profile details (job title, department, account status, license count), all managed devices with compliance state, group memberships, and every assigned policy with Include/Exclude status and which group triggered the match.
+Output includes: User profile details (job title, department, account status, license count), all managed devices with compliance state, group memberships, and every assigned policy with Include/Exclude status and which group triggered the match.
 
 ---
 
 ### 4. Get-IntuneComplianceReport.ps1
 
-**What it does:** Identifies non-compliant devices and drills into the specific policies and settings that failed. Shows compliance rate, top failing policies, top failing settings, and devices with no compliance policy assigned.
+What it does: Identifies non-compliant devices and drills into the specific policies and settings that failed. Shows compliance rate, top failing policies, top failing settings, and devices with no compliance policy assigned.
 
-**When to use:** Compliance dashboard shows failures and you need to know exactly why, or you need a compliance report for auditors.
+When to use: Compliance dashboard shows failures and you need to know exactly why, or you need a compliance report for auditors.
 
 ```powershell
 # All non-compliant devices across the tenant
@@ -149,15 +184,15 @@ Each script is fully standalone. Run any script individually — it will handle 
 .\Get-IntuneComplianceReport.ps1 -GroupName "SG-Corporate-Laptops" -ExportPath "C:\temp\compliance.csv"
 ```
 
-**Output includes:** One CSV row per failed setting per device. Columns: device name, user, OS, model, serial, compliance state, policy name, policy state, setting name, setting state, current value. Console shows compliance rate, top failing policies ranked by violation count, and top failing settings ranked by device count.
+Output includes: One CSV row per failed setting per device. Columns: device name, user, OS, model, serial, compliance state, policy name, policy state, setting name, setting state, current value. Console shows compliance rate, top failing policies ranked by violation count, and top failing settings ranked by device count.
 
 ---
 
 ### 5. Get-IntuneStaleDevices.ps1
 
-**What it does:** Cross-references Intune and Entra ID to find stale devices, orphaned records, devices with no user, and disabled Entra accounts still owning devices. Generates actionable recommendations (RETIRE, DELETE, REVIEW, MONITOR).
+What it does: Cross-references Intune and Entra ID to find stale devices, orphaned records, devices with no user, and disabled Entra accounts still owning devices. Generates actionable recommendations (RETIRE, DELETE, REVIEW, MONITOR).
 
-**When to use:** Monthly device cleanup, preparing for license audits, or finding devices that fell off the radar.
+When to use: Monthly device cleanup, preparing for license audits, or finding devices that fell off the radar.
 
 ```powershell
 # Default: devices inactive for 90+ days, warning at 60 days
@@ -176,15 +211,15 @@ Each script is fully standalone. Run any script individually — it will handle 
 .\Get-IntuneStaleDevices.ps1 -OSFilter "iOS" -InactivityDays 30 -WarningDays 14
 ```
 
-**Output includes:** Intune last sync and days since sync, Entra last sign-in and days since sign-in, cross-reference status (orphan detection both directions), issues found, and a recommended action per device. Console shows stale count, orphan count, and the most stale devices ranked by days since sync.
+Output includes: Intune last sync and days since sync, Entra last sign-in and days since sign-in, cross-reference status (orphan detection both directions), issues found, and a recommended action per device. Console shows stale count, orphan count, and the most stale devices ranked by days since sync.
 
 ---
 
 ### 6. Get-IntuneAppStatusReport.ps1
 
-**What it does:** Reports app installation status across devices — failed, pending, and successful deployments with error codes and failure reasons.
+What it does: Reports app installation status across devices, covering failed, pending, and successful deployments with error codes and failure reasons.
 
-**When to use:** An app isn't installing on some devices, or you need deployment health metrics.
+When to use: An app isn't installing on some devices, or you need deployment health metrics.
 
 ```powershell
 # All assigned apps — show failures only
@@ -203,15 +238,15 @@ Each script is fully standalone. Run any script individually — it will handle 
 .\Get-IntuneAppStatusReport.ps1 -IncludeAll -ExportPath "C:\temp\app_status.csv"
 ```
 
-**Output includes:** App name, app type, device name, user, install state, error code (hex and decimal), install detail, last modified date. Console shows top failing apps, top error codes, and devices with the most failures.
+Output includes: App name, app type, device name, user, install state, error code (hex and decimal), install detail, last modified date. Console shows top failing apps, top error codes, and devices with the most failures.
 
 ---
 
 ### 7. Export-IntuneDeviceInventory.ps1
 
-**What it does:** Exports a comprehensive 35-column device inventory covering hardware, OS, compliance, encryption, storage, enrollment, and Entra ID status.
+What it does: Exports a 35-column device inventory covering hardware, OS, compliance, encryption, storage, enrollment, and Entra ID status.
 
-**When to use:** Asset management, hardware lifecycle planning, executive reporting, license audits.
+When to use: Asset management, hardware lifecycle planning, executive reporting, license audits.
 
 ```powershell
 # Full inventory of all managed devices
@@ -230,15 +265,15 @@ Each script is fully standalone. Run any script individually — it will handle 
 .\Export-IntuneDeviceInventory.ps1 -OSFilter "Windows" -GroupName "SG-Pilot" -ExportPath "C:\temp\inventory.csv"
 ```
 
-**Output includes:** Device name, user, OS/version, manufacturer, model, serial, MAC addresses, IMEI, storage (total/free/% used), compliance state, encryption status, management agent, join type, ownership, enrollment date, device age, Autopilot status, Entra sign-in data, and more. Console shows fleet analytics: OS distribution, compliance breakdown, encryption status, top manufacturers/models, Windows version distribution, and low storage warnings.
+Output includes: Device name, user, OS/version, manufacturer, model, serial, MAC addresses, IMEI, storage (total/free/% used), compliance state, encryption status, management agent, join type, ownership, enrollment date, device age, Autopilot status, Entra sign-in data, and more. Console shows fleet analytics: OS distribution, compliance breakdown, encryption status, top manufacturers/models, Windows version distribution, and low storage warnings.
 
 ---
 
 ### 8. Get-IntuneBitLockerKeys.ps1
 
-**What it does:** Two modes — (1) Helpdesk lookup to retrieve BitLocker recovery keys for a specific device, and (2) Security audit to scan all Windows devices for missing escrowed keys.
+What it does: Two modes, (1) Helpdesk lookup to retrieve BitLocker recovery keys for a specific device, and (2) Security audit to scan all Windows devices for missing escrowed keys.
 
-**When to use:** User is locked out and needs a recovery key, or security audit requires proof of key escrow compliance.
+When to use: User is locked out and needs a recovery key, or security audit requires proof of key escrow compliance.
 
 ```powershell
 # --- Helpdesk Lookup ---
@@ -264,17 +299,17 @@ Each script is fully standalone. Run any script individually — it will handle 
 .\Get-IntuneBitLockerKeys.ps1 -Audit -ExportPath "C:\temp\bitlocker_audit.csv"
 ```
 
-**Lookup output:** Device info, encryption status, recovery key(s) with volume type, key ID, and creation date. Keys masked unless `-ShowKeys` is passed. CSV always contains full keys with a security warning.
+Lookup output: Device info, encryption status, recovery key(s) with volume type, key ID, and creation date. Keys masked unless `-ShowKeys` is passed. CSV always contains full keys with a security warning.
 
-**Audit output:** Key escrow status per device (KEY ESCROWED / KEY MISSING / NO ENTRA RECORD), key count, latest key date, volume types. Console shows escrow rate percentage and highlights encrypted devices with no escrowed key (data loss risk).
+Audit output: Key escrow status per device (KEY ESCROWED / KEY MISSING / NO ENTRA RECORD), key count, latest key date, volume types. Console shows escrow rate percentage and highlights encrypted devices with no escrowed key (data loss risk).
 
 ---
 
 ### 9. Invoke-IntuneBulkActions.ps1
 
-**What it does:** Performs bulk remote actions on managed devices: Sync, Restart, BitLocker key rotation, Defender scan, Defender signature update, and diagnostic log collection.
+What it does: Performs bulk remote actions on managed devices: Sync, Restart, BitLocker key rotation, Defender scan, Defender signature update, and diagnostic log collection.
 
-**When to use:** Policies aren't landing and you need to force check-in, or you need to push a Defender scan across a group after a security incident.
+When to use: Policies aren't landing and you need to force check-in, or you need to push a Defender scan across a group after a security incident.
 
 ```powershell
 # Force sync all devices in a group
@@ -305,7 +340,7 @@ Each script is fully standalone. Run any script individually — it will handle 
 .\Invoke-IntuneBulkActions.ps1 -Action Sync -GroupName "SG-Pilot" -ExportPath "C:\temp\sync_results.csv"
 ```
 
-**CSV input format** (for `-CsvPath`):
+CSV input format (for `-CsvPath`):
 ```csv
 DeviceName
 PC-001
@@ -313,15 +348,15 @@ PC-002
 LAPTOP-ABC
 ```
 
-**Safety features:** Confirmation prompt before execution (skip with `-Force`), extra warning for destructive actions (Restart, BitLockerRotate), configurable throttling (`-ThrottleMs`), per-device success/failure tracking.
+Safety features: Confirmation prompt before execution (skip with `-Force`), extra warning for destructive actions (Restart, BitLockerRotate), configurable throttling (`-ThrottleMs`), per-device success/failure tracking.
 
 ---
 
 ### 10. Get-EntraCAReport.ps1
 
-**What it does:** Exports all Conditional Access policies with full detail — user/group assignments (names resolved from IDs), application targets, platform/location/risk conditions, grant controls, and session controls.
+What it does: Exports all Conditional Access policies in full detail: user/group assignments (names resolved from IDs), application targets, platform/location/risk conditions, grant controls, and session controls.
 
-**When to use:** Security audit, CA policy documentation, change review, or finding gaps in your CA coverage.
+When to use: Security audit, CA policy documentation, change review, or finding gaps in your CA coverage.
 
 ```powershell
 # All enabled and report-only policies
@@ -340,15 +375,15 @@ LAPTOP-ABC
 .\Get-EntraCAReport.ps1 -EnabledOnly -ExportPath "C:\temp\ca_policies.csv"
 ```
 
-**Output includes:** Policy name, state, created/modified dates, included/excluded users and groups (names resolved), included/excluded apps, platforms, client app types, locations (named locations resolved), risk levels, device filters, grant controls (with operator AND/OR), session controls (sign-in frequency, persistent browser, CAE, etc.). Console highlights policies targeting All Users with no exclusions (lockout risk) and report-only policies that may have been forgotten.
+Output includes: Policy name, state, created/modified dates, included/excluded users and groups (names resolved), included/excluded apps, platforms, client app types, locations (named locations resolved), risk levels, device filters, grant controls (with operator AND/OR), session controls (sign-in frequency, persistent browser, CAE, etc.). Console highlights policies targeting All Users with no exclusions (lockout risk) and report-only policies that may have been forgotten.
 
 ---
 
 ### 11. Get-EntraGroupAudit.ps1
 
-**What it does:** Two modes — (1) Deep dive on a single group showing members, owners, nesting, licenses, and configuration, or (2) Bulk health audit across all groups flagging empty groups, ownerless groups, and large groups.
+What it does: Two modes, (1) Deep dive on a single group showing members, owners, nesting, licenses, and configuration, or (2) Bulk health audit across all groups flagging empty groups, ownerless groups, and large groups.
 
-**When to use:** Auditing group hygiene, verifying membership before policy changes, or cleaning up unused groups.
+When to use: Auditing group hygiene, verifying membership before policy changes, or cleaning up unused groups.
 
 ```powershell
 # --- Single Group Deep Dive ---
@@ -371,17 +406,17 @@ LAPTOP-ABC
 .\Get-EntraGroupAudit.ps1 -BulkAudit -ExportPath "C:\temp\group_health.csv"
 ```
 
-**Single group output:** Group type, security/mail enabled, dynamic rule and processing state, owners with UPNs, member breakdown (users/devices/nested groups/service principals), disabled user accounts still in the group, device OS breakdown, parent groups (nesting hierarchy), and license assignments with SKU names.
+Single group output: Group type, security/mail enabled, dynamic rule and processing state, owners with UPNs, member breakdown (users/devices/nested groups/service principals), disabled user accounts still in the group, device OS breakdown, parent groups (nesting hierarchy), and license assignments with SKU names.
 
-**Bulk audit output:** Group type distribution, empty groups, ownerless groups, large groups (500+), paused dynamic rules. CSV includes member count, owner count, group age, and issues per group.
+Bulk audit output: Group type distribution, empty groups, ownerless groups, large groups (500+), paused dynamic rules. CSV includes member count, owner count, group age, and issues per group.
 
 ---
 
 ### 12. Find-IntunePolicyConflict.ps1
 
-**What it does:** Three-mode policy troubleshooting tool — (1) Analyze finds reported conflicts and errors, (2) Investigate X-rays all settings for a feature area including successfully applied settings that may cause side effects, (3) Isolate does a binary search to find the culprit policy.
+What it does: A three-mode policy troubleshooting tool. Analyze finds reported conflicts and errors. Investigate X-rays all settings for a feature area, including successfully applied settings that may cause side effects. Isolate does a binary search to find the culprit policy.
 
-**When to use:** Something is broken on a device and you don't know which of the 70 policies is causing it.
+When to use: Something is broken on a device and you don't know which of the 70 policies is causing it.
 
 ```powershell
 # --- Step 1: Analyze (check for reported conflicts) ---
@@ -421,7 +456,7 @@ LAPTOP-ABC
 .\Find-IntunePolicyConflict.ps1 -DeviceName "L-PF4Z0HM0" -Mode Isolate
 ```
 
-**Built-in feature maps** (the script knows which CSP paths and settings each feature depends on):
+Built-in feature maps (the script knows which CSP paths and settings each feature depends on):
 
 | Feature | What it searches for |
 |---------|---------------------|
@@ -439,13 +474,13 @@ LAPTOP-ABC
 | Encryption | TLS/SSL, cipher suites, SCHANNEL |
 | AppLocker | Application control, WDAC, code integrity |
 
-**Key concept:** Analyze finds conflicts (two policies fighting). Investigate finds hardening side effects (one policy successfully applied a restrictive value that breaks a feature). Isolate finds anything when the first two can't.
+Key concept: Analyze finds conflicts where two policies fight. Investigate finds hardening side effects, where one policy successfully applies a restrictive value that breaks a feature. Isolate finds the culprit when the first two modes cannot.
 
 ---
 
 ### 13. Start-IntuneToolkit.ps1 (Menu Launcher)
 
-**What it does:** Interactive console menu that presents all toolkit scripts, handles Graph authentication once at startup, and guides you through parameter input for each script.
+What it does: Interactive console menu that presents all toolkit scripts, handles Graph authentication once at startup, and guides you through parameter input for each script.
 
 ```powershell
 # Just run it
@@ -496,12 +531,45 @@ C:\Users\admin\AppData\Local\Temp\AllDevices_DeviceInventory_20260411_145033.csv
 
 ## Troubleshooting Tips
 
-**"Insufficient privileges" errors:** Make sure your account has at least Intune Administrator or a custom role with the required Graph permissions. Some scripts (BitLocker keys, bulk actions) need elevated permissions.
+"Insufficient privileges" errors: make sure your account has at least Intune Administrator or a custom role with the required Graph permissions. Some scripts (BitLocker keys, bulk actions) need elevated permissions.
 
-**Scripts running slowly:** Large tenants with thousands of devices/policies will take longer. The scripts use progress bars for long operations. For app status and device inventory, filtering by `-OSFilter` or `-GroupName` significantly reduces API calls.
+Scripts running slowly: large tenants with thousands of devices/policies take longer. The scripts use progress bars for long operations. For app status and device inventory, filtering by `-OSFilter` or `-GroupName` reduces API calls substantially.
 
-**Graph rate limiting (429 errors):** The scripts handle pagination automatically. For bulk actions, adjust `-ThrottleMs` (default 200ms between calls). If you hit persistent throttling, increase to 500-1000ms.
+Graph rate limiting (429 errors): the scripts handle pagination automatically. For bulk actions, adjust `-ThrottleMs` (default 200ms between calls). If throttling persists, increase it to 500-1000ms.
 
-**"Device not found" errors:** Verify the device name matches exactly as shown in the Intune portal (case-sensitive). Use the Intune device name, not the computer hostname if they differ.
+"Device not found" errors: verify the device name matches exactly as shown in the Intune portal (case-sensitive). Use the Intune device name if it differs from the computer hostname.
 
-**Authentication across scripts:** If you run the launcher first, all scripts reuse the same Graph session. If running scripts individually, each one checks for an existing session before prompting.
+Authentication across scripts: if you run the launcher first, all scripts reuse the same Graph session. When you run scripts individually, each checks for an existing session before prompting.
+
+---
+
+## 👤 Author
+
+**Mohammad Abdelkader Omar**  
+GitHub: [@mabdulkadr](https://github.com/mabdulkadr)  
+Website: [momar.tech](https://momar.tech)
+
+---
+
+## 📜 License
+
+This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).
+
+---
+
+## ⚠ Disclaimer
+
+This skill and every script it generates are provided as-is with no warranty of any kind. Test generated tools in a staging environment before deploying to production. The authors assume no liability for any damage or data loss resulting from their use.
+
+---
+<div align="center">
+
+⭐ **If this skill saves you time, star the repo — it helps others find it.**
+
+[Report an Issue](../../issues) · [momar.tech](https://momar.tech)
+
+[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-FFDD00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://www.buymeacoffee.com/mabdulkadrx)
+
+Built with [**PowerShell Enterprise Admin**](https://github.com/mabdulkadr/powershell-enterprise-admin-skill)
+
+</div>
